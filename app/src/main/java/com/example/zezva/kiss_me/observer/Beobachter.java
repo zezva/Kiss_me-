@@ -1,4 +1,6 @@
-package com.example.zezva.kiss_me;
+package com.example.zezva.kiss_me.observer;
+
+import com.example.zezva.kiss_me.model.Room;
 
 import java.util.List;
 

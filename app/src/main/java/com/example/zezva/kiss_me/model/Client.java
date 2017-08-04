@@ -1,4 +1,4 @@
-package com.example.zezva.kiss_me;
+package com.example.zezva.kiss_me.model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +13,7 @@ public class Client implements Serializable {
     private  String gender ;
     private List<Room> roomList;
     private Room room;
+    private String status = "";
 
     public Client(String name, String gender){
         this.name = name ;
@@ -50,5 +51,13 @@ public class Client implements Serializable {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

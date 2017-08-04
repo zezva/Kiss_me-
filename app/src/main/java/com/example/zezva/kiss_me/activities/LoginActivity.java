@@ -1,12 +1,10 @@
-package com.example.zezva.kiss_me;
+package com.example.zezva.kiss_me.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
-
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -16,9 +14,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.io.IOException;
+import com.example.zezva.kiss_me.model.Client;
+import com.example.zezva.kiss_me.R;
+import com.example.zezva.kiss_me.udpconnection.CommandSender;
+import com.example.zezva.kiss_me.udpconnection.EventReceiver;
+
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 /**
  * A login screen that offers login via email/password.
@@ -32,7 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-    private  ClientThread clientThread;
+    private CommandSender eventSender;
+    private EventReceiver eventReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +45,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
         mEditTextGender = (EditText) findViewById(R.id.editTextGender);
+
         try {
-            clientThread = new ClientThread();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
+            eventReceiver = new EventReceiver();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        Thread thread = new Thread(clientThread);
-        thread.start();
+        eventReceiver.start();
 
 
         Button mEmailSignInButton = (Button) findViewById(R.id.sign_in);
@@ -120,17 +120,18 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+
 
             Intent intent   = new Intent(LoginActivity.this, RoomActivity.class);
             Client client = new Client(name, gender);
 
-           clientThread.sendNewClient(client);
+            eventSender = new CommandSender();
+            eventSender.execute(client);
 
             intent.putExtra("client", client);
-            intent.putExtra("clientThread", clientThread);
+           intent.putExtra("eventReceiver", eventReceiver);
             startActivity(intent);
-            showProgress(false);
+
 
 
         }
@@ -149,42 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                 gender.equals("Female");
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-
-        }
-    }
 
 }
 

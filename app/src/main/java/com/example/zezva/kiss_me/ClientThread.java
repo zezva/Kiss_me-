@@ -1,3 +1,4 @@
+/*
 package com.example.zezva.kiss_me;
 
 import java.io.ByteArrayOutputStream;
@@ -10,11 +11,13 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+*/
 /**
  * Created by Zezva on 02.08.2017.
- */
+ *//*
 
-public class ClientThread  implements Runnable,Beobachbarer, Serializable {
+
+public class ClientThread  implements Runnable,Beobachtbare, Serializable {
 
     private Beobachter beobachter = null ;
     private DatagramSocket clientSocket = null;
@@ -127,3 +130,4 @@ public class ClientThread  implements Runnable,Beobachbarer, Serializable {
         this.clientSocket = clientSocket;
     }
 }
+*/

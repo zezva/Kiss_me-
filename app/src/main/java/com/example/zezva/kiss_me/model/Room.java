@@ -1,4 +1,4 @@
-package com.example.zezva.kiss_me;
+package com.example.zezva.kiss_me.model;
 
 import java.io.Serializable;
 
